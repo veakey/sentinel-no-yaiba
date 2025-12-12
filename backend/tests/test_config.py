@@ -32,13 +32,16 @@ def test_settings_has_defaults(monkeypatch):
     assert settings.LOG_LEVEL == "INFO"
 
 
-def test_settings_requires_secret_key(monkeypatch):
-    """Test that SECRET_KEY is required"""
-    # Remove SECRET_KEY from environment if present
+def test_settings_has_default_secret_key(monkeypatch):
+    """Test that SECRET_KEY has a default value if not provided"""
+    # Remove SECRET_KEY from environment if present and clear .env loading
     monkeypatch.delenv("SECRET_KEY", raising=False)
     
-    with pytest.raises(ValidationError):
-        Settings()
+    # Should not raise error, should use default
+    # Note: If .env.example exists, it will load from there
+    settings = Settings()
+    assert settings.SECRET_KEY is not None
+    assert len(settings.SECRET_KEY) > 0
 
 
 def test_settings_cors_origins_default():

@@ -1,10 +1,14 @@
 """
 Pytest configuration and shared fixtures
 """
+import os
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
+
+# Set default test environment variables BEFORE importing app modules
+os.environ.setdefault("SECRET_KEY", "test-secret-key-for-pytest")
 
 from app.database.base import Base
 from app.database.database import get_db
