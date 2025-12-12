@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.api.routes import threats, websocket, auth, admin
+from app.api.routes import threats, websocket, auth, admin, malwarebytes
 
 app = FastAPI(
     title="Sentinel no Yaiba API",
@@ -29,6 +29,7 @@ app.include_router(threats.router)
 app.include_router(websocket.router)
 app.include_router(auth.router)
 app.include_router(admin.router)
+app.include_router(malwarebytes.router)
 
 
 @app.get("/")

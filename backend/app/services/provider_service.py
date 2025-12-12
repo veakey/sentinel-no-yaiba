@@ -155,6 +155,11 @@ class ProviderService:
         # Create provider instance via factory
         try:
             provider_instance = ProviderFactory.create(db_provider.type, provider_config)
+            
+            # For Malwarebytes provider, pass DB session and GUID for token persistence
+            if db_provider.type == "malwarebytes" and hasattr(provider_instance, '_db_session'):
+                provider_instance._db_session = self.db
+                provider_instance._provider_guid = db_provider.guid
         except Exception as e:
             raise ProviderException(f"Failed to create provider instance for {db_provider.name}: {str(e)}")
         

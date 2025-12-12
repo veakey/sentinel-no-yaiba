@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useProvidersStore } from '@/store/providersStore'
-import { Plus, Edit, Trash2, Power, Loader2 } from 'lucide-react'
+import { providersApi } from '@/services/api'
+import { Plus, Edit, Trash2, Power, Loader2, CheckCircle, XCircle } from 'lucide-react'
 import ProviderForm from './ProviderForm'
 import LoadingSpinner from '@/components/common/LoadingSpinner'
 import type { Provider } from '@/services/api'
@@ -11,6 +12,8 @@ export default function ProviderList() {
   const { providers, isLoading, error, fetchProviders, deleteProvider } = useProvidersStore()
   const [showForm, setShowForm] = useState(false)
   const [editingProvider, setEditingProvider] = useState<Provider | undefined>()
+  const [testingProvider, setTestingProvider] = useState<string | null>(null)
+  const [testResult, setTestResult] = useState<{ guid: string; success: boolean; message: string } | null>(null)
 
   useEffect(() => {
     fetchProviders()
@@ -44,6 +47,32 @@ export default function ProviderList() {
   const handleFormClose = () => {
     setShowForm(false)
     setEditingProvider(undefined)
+  }
+
+  const handleTestConnection = async (guid: string) => {
+    setTestingProvider(guid)
+    setTestResult(null)
+    try {
+      const result = await providersApi.testProviderConnection(guid)
+      // Success: 200 OK
+      setTestResult({ guid, success: true, message: result.message })
+      // Clear result after 5 seconds
+      setTimeout(() => setTestResult(null), 5000)
+    } catch (error: any) {
+      // Error: Use HTTP status code to determine success/failure
+      const statusCode = error.response?.status
+      const isSuccess = statusCode >= 200 && statusCode < 300
+      const errorMessage = error.response?.data?.detail || error.message || 'Failed to test connection'
+      
+      setTestResult({
+        guid,
+        success: isSuccess,
+        message: errorMessage,
+      })
+      setTimeout(() => setTestResult(null), 5000)
+    } finally {
+      setTestingProvider(null)
+    }
   }
 
   if (isLoading && providers.length === 0) {
@@ -102,21 +131,53 @@ export default function ProviderList() {
                 )}
               </div>
 
+              {testResult?.guid === provider.guid && (
+                <div
+                  className={`mb-4 p-3 rounded-lg flex items-center gap-2 ${
+                    testResult.success
+                      ? 'bg-green-500/20 border border-green-500/50'
+                      : 'bg-red-500/20 border border-red-500/50'
+                  }`}
+                >
+                  {testResult.success ? (
+                    <CheckCircle className="w-5 h-5 text-green-400" />
+                  ) : (
+                    <XCircle className="w-5 h-5 text-red-400" />
+                  )}
+                  <p className={`text-sm ${testResult.success ? 'text-green-400' : 'text-red-400'}`}>
+                    {testResult.message}
+                  </p>
+                </div>
+              )}
+
               <div className="flex gap-2">
                 <button
                   onClick={() => handleEdit(provider)}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 glass rounded-lg text-white hover:bg-white/10 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 h-10 glass rounded-lg text-white hover:bg-white/10 transition-colors"
                 >
                   <Edit className="w-4 h-4" />
                   {t('common.edit')}
                 </button>
-                <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2 glass rounded-lg text-white hover:bg-white/10 transition-colors">
-                  <Power className="w-4 h-4" />
-                  {t('admin.testConnection')}
+                <button
+                  onClick={() => handleTestConnection(provider.guid)}
+                  disabled={testingProvider === provider.guid}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 h-10 glass rounded-lg text-white hover:bg-white/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {testingProvider === provider.guid ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      {t('common.loading')}
+                    </>
+                  ) : (
+                    <>
+                      <Power className="w-4 h-4" />
+                      {t('admin.testConnection')}
+                    </>
+                  )}
                 </button>
                 <button
                   onClick={() => handleDelete(provider.guid)}
-                  className="px-4 py-2 glass rounded-lg text-red-400 hover:bg-red-500/20 transition-colors"
+                  className="flex items-center justify-center px-4 py-2 h-10 glass rounded-lg text-red-400 hover:bg-red-500/20 transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

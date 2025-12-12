@@ -2,14 +2,14 @@ import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
 
 const mockNewDevices = [
-  'MGD-PCD026759',
-  'vca01.labo.labomgd.ch',
-  'MGD-PCD026759',
-  'MGD-PCD026607',
+  'SNY-PCD026759',
+  'vca01.labo.sentinelnoyaiba.ch',
+  'SNY-PCD026759',
+  'SNY-PCD026607',
   'PC-162',
   'PC132',
-  'MGD-PCD026589',
-  'MGD-PCD026588',
+  'SNY-PCD026589',
+  'SNY-PCD026588',
 ]
 
 export default function NewDevicesList() {

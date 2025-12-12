@@ -39,11 +39,14 @@ class Provider(BaseModel):
     
     name = Column(String(100), nullable=False, index=True)
     type = Column(String(50), nullable=False, index=True)  # ProviderType enum value
-    api_key_encrypted = Column(Text, nullable=False)  # Encrypted API key
+    api_key_encrypted = Column(Text, nullable=True)  # Encrypted API key (optional for OAuth2)
     base_url = Column(String(500), nullable=True)
     config = Column(JSON, nullable=True)  # Provider-specific configuration
     is_active = Column(Boolean, default=True, nullable=False, index=True)
     provider_specific_settings = Column(JSON, nullable=True)  # Additional settings
+    # OAuth2 token storage (for providers using OAuth2)
+    access_token_encrypted = Column(Text, nullable=True)  # Encrypted OAuth2 access token
+    token_expires_at = Column(DateTime(timezone=True), nullable=True)  # Token expiration timestamp
     
     # Relationships
     cache_entries = relationship("CacheEntry", back_populates="provider", cascade="all, delete-orphan")

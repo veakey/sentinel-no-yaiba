@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { useEndpointStore } from '@/store/endpointStore'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 
 interface ProtectionData {
@@ -9,10 +10,14 @@ interface ProtectionData {
 
 export default function EndpointsByProtectionChart() {
   const { t } = useTranslation()
+  const { data } = useEndpointStore()
 
+  const protectionStatus = data?.summary?.protection_status || { protected: 0, unprotected: 0 }
+  
   const protectionData: ProtectionData[] = [
-    { nameKey: 'endpoints.protected', value: 140, color: '#0ea5e9' },
-  ]
+    { nameKey: 'endpoints.protected', value: protectionStatus.protected, color: '#0ea5e9' },
+    { nameKey: 'endpoints.unprotected', value: protectionStatus.unprotected, color: '#ef4444' },
+  ].filter(item => item.value > 0) // Only show non-zero values
 
   const totalEndpoints = protectionData.reduce((sum, item) => sum + item.value, 0)
 

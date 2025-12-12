@@ -1,13 +1,35 @@
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useEndpointStore } from '@/store/endpointStore'
 import EndpointSummaryCards from '@/components/endpoints/EndpointSummaryCards'
 import EndpointsByOSChart from '@/components/endpoints/EndpointsByOSChart'
 import EndpointsByPolicyChart from '@/components/endpoints/EndpointsByPolicyChart'
 import EndpointsByProtectionChart from '@/components/endpoints/EndpointsByProtectionChart'
 import EndpointsByActivityChart from '@/components/endpoints/EndpointsByActivityChart'
+import LoadingSpinner from '@/components/common/LoadingSpinner'
 import { Server } from 'lucide-react'
 
 export default function EndpointSummaryPage() {
   const { t } = useTranslation()
+  const { data, isLoading, error, fetchEndpointSummary } = useEndpointStore()
+
+  useEffect(() => {
+    fetchEndpointSummary()
+  }, [fetchEndpointSummary])
+
+  if (isLoading && !data) {
+    return <LoadingSpinner fullScreen />
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="glass-strong rounded-xl p-6 bg-red-500/20 border border-red-500/50">
+          <p className="text-red-400">{error}</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">

@@ -110,7 +110,6 @@ class ProviderResponse(BaseModel):
 
 class ProviderTestResponse(BaseModel):
     """Response schema for provider test"""
-    success: bool
     message: str
     details: Optional[Dict[str, Any]] = None
 
@@ -198,11 +197,13 @@ async def create_provider(
         encrypted_api_key = EncryptionService.encrypt(request.api_key)
     
     # Prepare config with OAuth credentials if provided
-    provider_config = request.config or {}
-    if provider_config.get('client_secret'):
-        # Encrypt client_secret before storing
-        client_secret = provider_config['client_secret']
-        provider_config['client_secret'] = f"encrypted:{EncryptionService.encrypt(client_secret)}"
+    provider_config = {}
+    if request.config:
+        provider_config = request.config.copy()  # Make a copy to avoid modifying the original
+        if provider_config.get('client_secret'):
+            # Encrypt client_secret before storing
+            client_secret = provider_config['client_secret']
+            provider_config['client_secret'] = f"encrypted:{EncryptionService.encrypt(client_secret)}"
     
     # Create provider
     provider = Provider(
@@ -259,23 +260,34 @@ async def update_provider(
     # Update fields
     if request.name is not None:
         provider.name = request.name
-    if request.api_key is not None:
-        provider.api_key_encrypted = EncryptionService.encrypt(request.api_key)
     if request.base_url is not None:
         provider.base_url = request.base_url
+    if request.is_active is not None:
+        provider.is_active = request.is_active
+    if request.provider_specific_settings is not None:
+        provider.provider_specific_settings = request.provider_specific_settings
+    
+    # Handle authentication method changes
+    if request.api_key is not None:
+        # Switching to API key auth - clear OAuth config
+        provider.api_key_encrypted = EncryptionService.encrypt(request.api_key)
+        if provider.config and isinstance(provider.config, dict):
+            # Remove OAuth credentials from config
+            updated_config = provider.config.copy()
+            updated_config.pop('client_id', None)
+            updated_config.pop('client_secret', None)
+            provider.config = updated_config if updated_config else None
+    
     if request.config is not None:
-        # Encrypt client_secret if present
+        # Switching to OAuth - clear API key
         updated_config = request.config.copy()
-        if 'client_secret' in updated_config:
+        if 'client_secret' in updated_config and updated_config['client_secret']:
             client_secret = updated_config['client_secret']
             # Only encrypt if not already encrypted
             if not isinstance(client_secret, str) or not client_secret.startswith("encrypted:"):
                 updated_config['client_secret'] = f"encrypted:{EncryptionService.encrypt(client_secret)}"
         provider.config = updated_config
-    if request.is_active is not None:
-        provider.is_active = request.is_active
-    if request.provider_specific_settings is not None:
-        provider.provider_specific_settings = request.provider_specific_settings
+        provider.api_key_encrypted = None  # Clear API key when using OAuth
     
     try:
         updated = repository.update(provider)
@@ -317,7 +329,7 @@ async def delete_provider(
     return None
 
 
-@router.post("/{guid}/test", response_model=ProviderTestResponse)
+@router.post("/{guid}/test", response_model=ProviderTestResponse, status_code=status.HTTP_200_OK)
 async def test_provider(
     guid: str,
     db: Session = Depends(get_db),
@@ -332,10 +344,13 @@ async def test_provider(
         admin_user: Current admin user (from dependency)
         
     Returns:
-        Test result with success status and message
+        Test result with message (200 OK on success)
         
     Raises:
-        HTTPException: If provider not found (404)
+        HTTPException: 
+            - 404 if provider not found
+            - 400 if provider configuration is invalid
+            - 502 if provider API is unreachable or returns error
     """
     provider_service = ProviderService(db)
     
@@ -354,26 +369,38 @@ async def test_provider(
         
         if is_healthy:
             return ProviderTestResponse(
-                success=True,
-                message="Provider connection test successful",
-                details={"health_check": "passed"}
+                message="Provider connection test successful. OAuth2 token obtained and API is accessible.",
+                details={"health_check": "passed", "oauth2": "authenticated"}
             )
         else:
-            return ProviderTestResponse(
-                success=False,
-                message="Provider health check failed",
-                details={"health_check": "failed"}
+            # This should not happen as health_check should raise exception on failure
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail="Provider health check returned False (no exception raised)"
             )
     except ProviderException as e:
-        return ProviderTestResponse(
-            success=False,
-            message=f"Provider test failed: {str(e)}",
-            details={"error": str(e)}
+        # ProviderException contains detailed error message
+        error_message = str(e)
+        # Determine appropriate HTTP status code based on error type
+        status_code = status.HTTP_502_BAD_GATEWAY  # Default to bad gateway
+        if "authentication failed" in error_message.lower() or "invalid credentials" in error_message.lower():
+            status_code = status.HTTP_401_UNAUTHORIZED
+        elif "bad request" in error_message.lower():
+            status_code = status.HTTP_400_BAD_REQUEST
+        elif "forbidden" in error_message.lower():
+            status_code = status.HTTP_403_FORBIDDEN
+        elif "timeout" in error_message.lower() or "network error" in error_message.lower():
+            status_code = status.HTTP_504_GATEWAY_TIMEOUT
+        
+        raise HTTPException(
+            status_code=status_code,
+            detail=error_message
         )
     except Exception as e:
-        return ProviderTestResponse(
-            success=False,
-            message=f"Unexpected error during provider test: {str(e)}",
-            details={"error": str(e)}
+        # Catch any other unexpected exceptions
+        error_message = f"Unexpected error during provider test: {str(e)}"
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=error_message
         )
 

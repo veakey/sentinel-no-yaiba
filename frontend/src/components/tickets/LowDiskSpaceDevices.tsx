@@ -7,9 +7,9 @@ interface LowDiskDevice {
 }
 
 const mockLowDiskDevices: LowDiskDevice[] = [
-  { device: 'vca01.labo.labomgd.ch (/boot/efi)', space: '8.03 MB' },
-  { device: 'vca01.labo.labomgd.ch (/boot)', space: '403.75 MB' },
-  { device: 'vca01.labo.labomgd.ch (/storage/netdump)', space: '914.74 MB' },
+  { device: 'vca01.labo.sentinelnoyaiba.ch (/boot/efi)', space: '8.03 MB' },
+  { device: 'vca01.labo.sentinelnoyaiba.ch (/boot)', space: '403.75 MB' },
+  { device: 'vca01.labo.sentinelnoyaiba.ch (/storage/netdump)', space: '914.74 MB' },
   { device: 'PC130 (D:)', space: '2.55 GB' },
   { device: 'PC132 (D:)', space: '2.62 GB' },
 ]

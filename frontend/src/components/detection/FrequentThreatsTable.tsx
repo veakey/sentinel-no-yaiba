@@ -1,23 +1,40 @@
+import { useDetectionStore } from '@/store/detectionStore'
+
 interface FrequentThreatData {
   threatName: string
   detectionCount: number
   type: string
 }
 
-const frequentThreatsData: FrequentThreatData[] = [
-  { threatName: 'Riskware', detectionCount: 5, type: 'Outbound Co...' },
-  { threatName: 'Malware.Ransom.Agent.Generic', detectionCount: 5, type: 'File' },
-  { threatName: 'Phishing', detectionCount: 2, type: 'Outbound Co...' },
-  { threatName: 'Pup.Optional.Simplytech', detectionCount: 2, type: 'File' },
-  { threatName: 'Fraud', detectionCount: 2, type: 'Outbound Co...' },
-  { threatName: 'Trojan', detectionCount: 1, type: 'Outbound Co...' },
-]
-
 export default function FrequentThreatsTable() {
-  // Fill remaining rows to 10
+  const { data } = useDetectionStore()
+  
+  // Count threats by name
+  const threats = data?.threats || []
+  const threatCounts: Record<string, { count: number; type: string }> = {}
+  
+  threats.forEach((threat: any) => {
+    const threatName = threat.threat_name || threat.name || threat.threat_name || 'Unknown'
+    const threatType = threat.type || threat.threat_type || threat.category || 'Unknown'
+    if (!threatCounts[threatName]) {
+      threatCounts[threatName] = { count: 0, type: threatType }
+    }
+    threatCounts[threatName].count += 1
+  })
+  
+  const frequentThreatsData: FrequentThreatData[] = Object.entries(threatCounts)
+    .map(([threatName, { count, type }]) => ({
+      threatName,
+      detectionCount: count,
+      type: type.length > 15 ? type.substring(0, 15) + '...' : type,
+    }))
+    .sort((a, b) => b.detectionCount - a.detectionCount)
+    .slice(0, 10) // Top 10
+  
+  // Fill remaining rows to 10 if needed
   const displayData = [
     ...frequentThreatsData,
-    ...Array(10 - frequentThreatsData.length).fill({
+    ...Array(Math.max(0, 10 - frequentThreatsData.length)).fill({
       threatName: '-',
       detectionCount: '-',
       type: '-',

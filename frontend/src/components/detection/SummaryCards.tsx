@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { useDetectionStore } from '@/store/detectionStore'
 import { Ban, X, Search, Target, RotateCcw, AlertCircle } from 'lucide-react'
 
 interface SummaryCardData {
@@ -12,55 +13,56 @@ interface SummaryCardData {
 
 export default function SummaryCards() {
   const { t } = useTranslation()
+  const { data } = useDetectionStore()
+
+  const summary = data?.summary || {
+    total: 0,
+    critical: 0,
+    high: 0,
+    medium: 0,
+    low: 0,
+  }
 
   const summaryData: SummaryCardData[] = [
     {
-      labelKey: 'detection.blocked',
-      count: 10,
-      change: '↑ 11% change',
-      changeType: 'increase',
+      labelKey: 'detection.totalDetections',
+      count: summary.total,
+      change: '—',
+      changeType: 'no-change',
+      icon: AlertCircle,
+      iconColor: 'text-red-400',
+    },
+    {
+      labelKey: 'detection.critical',
+      count: summary.critical,
+      change: '—',
+      changeType: 'no-change',
       icon: Ban,
       iconColor: 'text-red-400',
     },
     {
-      labelKey: 'detection.deleted',
-      count: 0,
-      change: 'No change',
+      labelKey: 'detection.high',
+      count: summary.high,
+      change: '—',
+      changeType: 'no-change',
+      icon: Target,
+      iconColor: 'text-orange-400',
+    },
+    {
+      labelKey: 'detection.medium',
+      count: summary.medium,
+      change: '—',
+      changeType: 'no-change',
+      icon: Search,
+      iconColor: 'text-yellow-400',
+    },
+    {
+      labelKey: 'detection.low',
+      count: summary.low,
+      change: '—',
       changeType: 'no-change',
       icon: X,
       iconColor: 'text-blue-400',
-    },
-    {
-      labelKey: 'detection.found',
-      count: 1,
-      change: '↓ 94% change',
-      changeType: 'decrease',
-      icon: Search,
-      iconColor: 'text-blue-400',
-    },
-    {
-      labelKey: 'detection.quarantined',
-      count: 6,
-      change: '↑ 100% change',
-      changeType: 'increase',
-      icon: Target,
-      iconColor: 'text-blue-400',
-    },
-    {
-      labelKey: 'detection.restored',
-      count: 0,
-      change: 'No change',
-      changeType: 'no-change',
-      icon: RotateCcw,
-      iconColor: 'text-blue-400',
-    },
-    {
-      labelKey: 'detection.totalDetections',
-      count: 17,
-      change: '↓ 40% change',
-      changeType: 'decrease',
-      icon: AlertCircle,
-      iconColor: 'text-red-400',
     },
   ]
 

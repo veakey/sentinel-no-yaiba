@@ -1,3 +1,4 @@
+import { useEndpointStore } from '@/store/endpointStore'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts'
 
 interface PolicyData {
@@ -6,15 +7,20 @@ interface PolicyData {
   color: string
 }
 
-const policyData: PolicyData[] = [
-  { policy: 'EDR Postes', endpoints: 99, color: '#0ea5e9' },
-  { policy: 'EDR Serveurs', endpoints: 25, color: '#9333ea' },
-  { policy: 'Default Policy', endpoints: 11, color: '#06b6d4' },
-  { policy: 'Serveurs RDS (Sans Behavior)', endpoints: 3, color: '#6b7280' },
-  { policy: 'Serveurs Web', endpoints: 2, color: '#22c55e' },
-]
+const COLORS = ['#0ea5e9', '#9333ea', '#06b6d4', '#6b7280', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6']
 
 export default function EndpointsByPolicyChart() {
+  const { data } = useEndpointStore()
+  
+  const policyDistribution = data?.summary?.policy_distribution || {}
+  
+  const policyData: PolicyData[] = Object.entries(policyDistribution)
+    .map(([policy, endpoints], index) => ({
+      policy,
+      endpoints: endpoints as number,
+      color: COLORS[index % COLORS.length],
+    }))
+    .sort((a, b) => b.endpoints - a.endpoints) // Sort by endpoints descending
   return (
     <div>
       <ResponsiveContainer width="100%" height={300}>

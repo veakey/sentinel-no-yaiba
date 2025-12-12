@@ -91,7 +91,7 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-6 text-center text-sm text-white/60">
-          <p>Demo: admin / password</p>
+          <p>Default admin: admin / admin123</p>
         </div>
       </div>
     </div>

@@ -145,6 +145,23 @@ export const providersApi = {
   deleteProvider: async (guid: string): Promise<void> => {
     await apiClient.delete(`/api/admin/providers/${guid}`)
   },
+
+  testProviderConnection: async (guid: string): Promise<{ message: string; details?: any }> => {
+    const response = await apiClient.post(`/api/admin/providers/${guid}/test`)
+    return response.data
+  },
+}
+
+export const malwarebytesApi = {
+  getDetectionSummary: async (): Promise<any> => {
+    const response = await apiClient.get('/api/malwarebytes/detection-summary')
+    return response.data
+  },
+
+  getEndpointSummary: async (): Promise<any> => {
+    const response = await apiClient.get('/api/malwarebytes/endpoint-summary')
+    return response.data
+  },
 }
 
 export default apiClient

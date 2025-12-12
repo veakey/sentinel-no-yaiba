@@ -119,7 +119,34 @@ cp .env.example .env
    - `CORS_ORIGINS`: Allowed origins for CORS (default: `http://localhost:3000,http://localhost:5173`)
    - `ENCRYPTION_KEY`: Key to encrypt API keys (optional)
 
-5. **Run the application:**
+5. **Initialize admin user:**
+```bash
+# Option 1: From the project root
+python backend/scripts/init_admin.py
+
+# Option 2: From the backend directory
+cd backend
+python scripts/init_admin.py
+```
+
+   This creates a default admin user with:
+   - Username: `admin`
+   - Password: `admin123`
+   - Email: `admin@example.com`
+
+   To create a custom admin user:
+```bash
+# From the project root
+python backend/scripts/init_admin.py --username monadmin --password monpassword --email monadmin@example.com
+
+# Or from the backend directory
+cd backend
+python scripts/init_admin.py --username monadmin --password monpassword --email monadmin@example.com
+```
+
+   **Note:** If the admin user already exists, the script will inform you. You can still use the existing credentials or create a new admin with different credentials.
+
+6. **Run the application:**
 ```bash
 # From the backend directory
 python -m uvicorn app.main:app --reload

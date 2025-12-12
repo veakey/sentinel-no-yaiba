@@ -1,19 +1,26 @@
 import { useTranslation } from 'react-i18next'
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts'
+import { useEndpointStore } from '@/store/endpointStore'
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 
 interface OSData {
-  nameKey: string
+  name: string
   value: number
   color: string
 }
 
+const COLORS = ['#9333ea', '#0ea5e9', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4']
+
 export default function EndpointsByOSChart() {
   const { t } = useTranslation()
+  const { data } = useEndpointStore()
 
-  const osData: OSData[] = [
-    { nameKey: 'endpoints.windows', value: 128, color: '#9333ea' },
-    { nameKey: 'endpoints.linux', value: 12, color: '#0ea5e9' },
-  ]
+  const osDistribution = data?.summary?.os_distribution || {}
+  
+  const osData: OSData[] = Object.entries(osDistribution).map(([name, value], index) => ({
+    name,
+    value: value as number,
+    color: COLORS[index % COLORS.length],
+  }))
 
   const totalEndpoints = osData.reduce((sum, item) => sum + item.value, 0)
 
@@ -55,13 +62,13 @@ export default function EndpointsByOSChart() {
       </ResponsiveContainer>
       <div className="flex flex-col gap-2 mt-4">
         {osData.map((item) => (
-          <div key={item.nameKey} className="flex items-center gap-3">
+          <div key={item.name} className="flex items-center gap-3">
             <div
               className="w-4 h-4 rounded-full"
               style={{ backgroundColor: item.color }}
             />
             <div className="flex items-center gap-2">
-              <span className="text-sm text-white/70 font-semibold">{t(item.nameKey)}:</span>
+              <span className="text-sm text-white/70 font-semibold">{item.name}:</span>
               <span className="text-sm text-white/90">{item.value}</span>
             </div>
           </div>

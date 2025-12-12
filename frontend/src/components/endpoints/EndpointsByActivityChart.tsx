@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next'
+import { useEndpointStore } from '@/store/endpointStore'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
+import { subDays, isAfter } from 'date-fns'
 
 interface ActivityData {
   nameKey: string
@@ -9,12 +11,43 @@ interface ActivityData {
 
 export default function EndpointsByActivityChart() {
   const { t } = useTranslation()
-
+  const { data } = useEndpointStore()
+  
+  const endpoints = data?.endpoints || []
+  const now = new Date()
+  const sevenDaysAgo = subDays(now, 7)
+  const thirtyDaysAgo = subDays(now, 30)
+  
+  let active7Days = 0
+  let offline30Days = 0
+  let inactive30Days = 0
+  
+  endpoints.forEach((endpoint: any) => {
+    const lastSeen = endpoint.last_seen || endpoint.last_sync || endpoint.updated_at
+    if (!lastSeen) {
+      inactive30Days++
+      return
+    }
+    
+    try {
+      const lastSeenDate = new Date(lastSeen)
+      if (isAfter(lastSeenDate, sevenDaysAgo)) {
+        active7Days++
+      } else if (isAfter(lastSeenDate, thirtyDaysAgo)) {
+        offline30Days++
+      } else {
+        inactive30Days++
+      }
+    } catch {
+      inactive30Days++
+    }
+  })
+  
   const activityData: ActivityData[] = [
-    { nameKey: 'endpoints.activeSynced7Days', value: 107, color: '#06b6d4' },
-    { nameKey: 'endpoints.offlineSynced30Days', value: 23, color: '#9333ea' },
-    { nameKey: 'endpoints.inactiveSynced30Days', value: 10, color: '#0ea5e9' },
-  ]
+    { nameKey: 'endpoints.activeSynced7Days', value: active7Days, color: '#06b6d4' },
+    { nameKey: 'endpoints.offlineSynced30Days', value: offline30Days, color: '#9333ea' },
+    { nameKey: 'endpoints.inactiveSynced30Days', value: inactive30Days, color: '#0ea5e9' },
+  ].filter(item => item.value > 0) // Only show non-zero values
 
   const totalEndpoints = activityData.reduce((sum, item) => sum + item.value, 0)
 

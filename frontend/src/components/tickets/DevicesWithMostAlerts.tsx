@@ -10,10 +10,10 @@ const mockDevices: DeviceAlert[] = [
   { device: 'JadeOnline PROD', alerts: 10 },
   { device: 'PC130', alerts: 2 },
   { device: 'PCD-223', alerts: 1 },
-  { device: 'MGD-PCL026717', alerts: 1 },
-  { device: 'MGD-PCL026530', alerts: 1 },
+  { device: 'SNY-PCL026717', alerts: 1 },
+  { device: 'SNY-PCL026530', alerts: 1 },
   { device: 'PCD-128', alerts: 1 },
-  { device: 'MGD-PCD026614', alerts: 1 },
+  { device: 'SNY-PCD026614', alerts: 1 },
 ]
 
 export default function DevicesWithMostAlerts() {

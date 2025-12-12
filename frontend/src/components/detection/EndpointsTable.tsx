@@ -1,24 +1,35 @@
+import { useDetectionStore } from '@/store/detectionStore'
+
 interface EndpointData {
   endpoint: string
   detectedThreats: number
 }
 
-const endpointsData: EndpointData[] = [
-  { endpoint: 'MGD-PCD026593.labo.labomgd.ch', detectedThreats: 5 },
-  { endpoint: 'MGD-PCL026631.labo.labomgd.ch', detectedThreats: 4 },
-  { endpoint: 'MGD-PCL026678', detectedThreats: 2 },
-  { endpoint: 'MGDLAB2.labo.labomgd.ch', detectedThreats: 2 },
-  { endpoint: 'MGD-PCL026506.labo.labomgd.ch', detectedThreats: 1 },
-  { endpoint: 'MGD-PCL026740.labo.labomgd.ch', detectedThreats: 1 },
-  { endpoint: 'MGD-PCD026588.labo.labomgd.ch', detectedThreats: 1 },
-  { endpoint: 'MGD-PCL026760', detectedThreats: 1 },
-]
-
 export default function EndpointsTable() {
-  // Fill remaining rows to 10
+  const { data } = useDetectionStore()
+  
+  // Count threats per endpoint
+  const threats = data?.threats || []
+  const endpointCounts: Record<string, number> = {}
+  
+  threats.forEach((threat: any) => {
+    const endpointId = threat.endpoint_id || threat.endpoint?.id || threat.endpoint_id
+    const endpointName = threat.endpoint?.name || threat.endpoint_name || `Endpoint ${endpointId}` || 'Unknown'
+    endpointCounts[endpointName] = (endpointCounts[endpointName] || 0) + 1
+  })
+  
+  const endpointsData: EndpointData[] = Object.entries(endpointCounts)
+    .map(([endpoint, detectedThreats]) => ({
+      endpoint,
+      detectedThreats: detectedThreats as number,
+    }))
+    .sort((a, b) => b.detectedThreats - a.detectedThreats)
+    .slice(0, 10) // Top 10
+  
+  // Fill remaining rows to 10 if needed
   const displayData = [
     ...endpointsData,
-    ...Array(10 - endpointsData.length).fill({ endpoint: '-', detectedThreats: '-' }),
+    ...Array(Math.max(0, 10 - endpointsData.length)).fill({ endpoint: '-', detectedThreats: '-' }),
   ]
 
   return (
