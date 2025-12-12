@@ -71,7 +71,8 @@
     "admin": "Administration",
     "profile": "Profil",
     "tickets": "Tickets",
-    "reports": "Rapports"
+    "reports": "Rapports",
+    "detectionSummary": "Résumé des détections"
   }
 }
 

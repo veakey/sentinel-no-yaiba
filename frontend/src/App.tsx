@@ -4,6 +4,7 @@ import { useAuthStore } from './store/authStore'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 import ThreatsPage from './pages/ThreatsPage'
+import DetectionSummaryPage from './pages/DetectionSummaryPage'
 import TicketsPage from './pages/TicketsPage'
 import ReportsPage from './pages/ReportsPage'
 import AdminPage from './pages/AdminPage'
@@ -32,6 +33,7 @@ function App() {
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="threats" element={<ThreatsPage />} />
+          <Route path="detection-summary" element={<DetectionSummaryPage />} />
           <Route path="tickets" element={<TicketsPage />} />
           <Route path="reports" element={<ReportsPage />} />
           <Route path="admin" element={<AdminPage />} />
