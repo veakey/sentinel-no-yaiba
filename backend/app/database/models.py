@@ -1,8 +1,26 @@
 """
 Database models
 """
-from sqlalchemy import Column, Integer, String, JSON, DateTime, Text
+from sqlalchemy import Column, Integer, String, JSON, DateTime, Text, Boolean, Enum
+import enum
 from .base import BaseModel
+
+
+class UserRole(str, enum.Enum):
+    """User role enumeration"""
+    ADMIN = "admin"
+    CLIENT = "client"
+
+
+class User(BaseModel):
+    """User model for authentication and authorization"""
+    __tablename__ = "users"
+    
+    username = Column(String(50), unique=True, nullable=False, index=True)
+    email = Column(String(255), unique=True, nullable=False, index=True)
+    hashed_password = Column(String(255), nullable=False)
+    role = Column(String(20), nullable=False, default=UserRole.CLIENT.value)
+    is_active = Column(Boolean, default=True, nullable=False)
 
 
 class CacheEntry(BaseModel):
