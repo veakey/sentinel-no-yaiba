@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { Ticket } from 'lucide-react'
+import { useParams } from 'react-router-dom'
+import { FileText } from 'lucide-react'
+import ErrorBoundary from '@/components/common/ErrorBoundary'
 import IntegrityScoreCards from '@/components/tickets/IntegrityScoreCards'
 import SystemOverviewCards from '@/components/tickets/SystemOverviewCards'
 import DeviceTypeChart from '@/components/tickets/DeviceTypeChart'
@@ -14,17 +16,19 @@ import LowDiskSpaceDevices from '@/components/tickets/LowDiskSpaceDevices'
 import ManagementSummary from '@/components/tickets/ManagementSummary'
 import DiskUsageTable from '@/components/tickets/DiskUsageTable'
 import PatchStatusTable from '@/components/tickets/PatchStatusTable'
-import ErrorBoundary from '@/components/common/ErrorBoundary'
 
-export default function TicketsPage() {
+export default function TicketReportPage() {
   const { t } = useTranslation()
+  const { clientName } = useParams<{ clientName: string }>()
 
   return (
     <ErrorBoundary>
       <div className="space-y-6">
         <div className="flex items-center gap-3 mb-6">
-          <Ticket className="w-8 h-8 text-primary-400" />
-          <h1 className="text-3xl font-bold text-white">{t('tickets.title')}</h1>
+          <FileText className="w-8 h-8 text-primary-400" />
+          <h1 className="text-3xl font-bold text-white">
+            {t('tickets.reportTitle')} {clientName || 'Client'}
+          </h1>
         </div>
 
         {/* Integrity Score Section */}

@@ -6,6 +6,7 @@ import DashboardPage from './pages/DashboardPage'
 import ThreatsPage from './pages/ThreatsPage'
 import DetectionSummaryPage from './pages/DetectionSummaryPage'
 import EndpointSummaryPage from './pages/EndpointSummaryPage'
+import TicketReportPage from './pages/TicketReportPage'
 import TicketsPage from './pages/TicketsPage'
 import ReportsPage from './pages/ReportsPage'
 import AdminPage from './pages/AdminPage'
@@ -37,6 +38,7 @@ function App() {
           <Route path="detection-summary" element={<DetectionSummaryPage />} />
           <Route path="endpoint-summary" element={<EndpointSummaryPage />} />
           <Route path="tickets" element={<TicketsPage />} />
+          <Route path="ticket-report/:clientName" element={<TicketReportPage />} />
           <Route path="reports" element={<ReportsPage />} />
           <Route path="admin" element={<AdminPage />} />
         </Route>
