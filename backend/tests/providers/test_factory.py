@@ -53,17 +53,25 @@ def test_provider_factory_list_registered():
         async def fetch_threats(self, params):
             return {}
     
-    # Clear any existing registrations
-    ProviderFactory._providers.clear()
+    # Save existing registrations
+    original_providers = ProviderFactory._providers.copy()
     
-    ProviderFactory.register("provider1", Provider1)
-    ProviderFactory.register("provider2", Provider2)
-    
-    registered = ProviderFactory.list_registered()
-    
-    assert "provider1" in registered
-    assert "provider2" in registered
-    assert len(registered) >= 2
+    try:
+        # Clear any existing registrations for this test
+        ProviderFactory._providers.clear()
+        
+        ProviderFactory.register("provider1", Provider1)
+        ProviderFactory.register("provider2", Provider2)
+        
+        registered = ProviderFactory.list_registered()
+        
+        assert "provider1" in registered
+        assert "provider2" in registered
+        assert len(registered) >= 2
+    finally:
+        # Restore original registrations
+        ProviderFactory._providers.clear()
+        ProviderFactory._providers.update(original_providers)
 
 
 def test_provider_factory_enum_types():

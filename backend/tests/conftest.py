@@ -10,6 +10,9 @@ from fastapi.testclient import TestClient
 # Set default test environment variables BEFORE importing app modules
 os.environ.setdefault("SECRET_KEY", "test-secret-key-for-pytest")
 
+# Import providers module to trigger provider registration
+import app.providers  # noqa: F401
+
 from app.database.base import Base
 from app.database.database import get_db
 from app.main import app
