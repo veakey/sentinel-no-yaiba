@@ -1,10 +1,10 @@
 """
-Database connection and session management
+Database configuration and session management
 """
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-
 from app.config import settings
+from app.database.base import Base
 
 # Create engine
 engine = create_engine(
@@ -18,12 +18,13 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_db() -> Session:
     """
-    Dependency function for FastAPI to get database session.
-    Yields a database session and closes it after use.
+    Dependency function to get database session.
+    
+    Yields:
+        Database session
     """
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
-

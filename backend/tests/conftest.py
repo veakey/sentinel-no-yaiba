@@ -13,6 +13,9 @@ os.environ.setdefault("SECRET_KEY", "test-secret-key-for-pytest")
 # Import providers module to trigger provider registration
 import app.providers  # noqa: F401
 
+# Import all models to ensure they're registered with Base
+from app.database.models import User, CacheEntry  # noqa: F401
+
 from app.database.base import Base
 from app.database.database import get_db
 from app.main import app
@@ -32,6 +35,8 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engin
 @pytest.fixture(scope="function")
 def db_session():
     """Create a new database session for each test"""
+    # Drop all tables first to ensure clean state
+    Base.metadata.drop_all(bind=engine)
     # Create all tables
     Base.metadata.create_all(bind=engine)
     
