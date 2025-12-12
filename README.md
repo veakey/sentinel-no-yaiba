@@ -81,45 +81,82 @@ See [docs/api-links.md](docs/api-links.md) for API documentation links.
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- SQLite
+- Python 3.11+ (Python 3.13 supported)
+- Node.js 18+ (for frontend, not yet implemented)
+- SQLite (included with Python)
 
-### Installation
+### Backend Setup
 
+1. **Navigate to backend directory:**
 ```bash
-# Backend
 cd backend
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-
-# Frontend
-cd frontend
-npm install
-npm run dev
 ```
 
-### Environment Variables
+2. **Install dependencies:**
+```bash
+python -m pip install -r requirements.txt
+```
 
-Copy `.env.example` to `.env` and configure:
-- `SECRET_KEY`: Secret key for JWT
-- `DATABASE_URL`: Database URL
-- `ENCRYPTION_KEY`: Key to encrypt API keys
-- `CORS_ORIGINS`: Allowed origins for CORS
+3. **Create environment file:**
+```bash
+# Windows PowerShell
+Copy-Item .env.example .env
+
+# Windows CMD
+copy .env.example .env
+
+# Linux/Mac
+cp .env.example .env
+```
+
+   **Note:** While default values are provided in code for development, creating a `.env` file is recommended for proper configuration. The `.env.example` file contains all required variables with default values.
+
+4. **Configure environment variables (optional for development):**
+   
+   For development, the default values in `.env.example` work out of the box. For production, edit the `.env` file and update:
+   - `SECRET_KEY`: Secret key for JWT (default: works for dev)
+   - `DATABASE_URL`: Database URL (default: `sqlite:///./sentinel.db`)
+   - `CORS_ORIGINS`: Allowed origins for CORS (default: `http://localhost:3000,http://localhost:5173`)
+   - `ENCRYPTION_KEY`: Key to encrypt API keys (optional)
+
+5. **Run the application:**
+```bash
+# From the backend directory
+python -m uvicorn app.main:app --reload
+```
+
+The API will be available at:
+- API: http://127.0.0.1:8000
+- Documentation: http://127.0.0.1:8000/api/docs
+- ReDoc: http://127.0.0.1:8000/api/redoc
+
+### Frontend Setup
+
+*Frontend setup will be available soon*
 
 ## 🧪 Testing
 
 The project follows a TDD (Test-Driven Development) approach:
 
-```bash
-# Backend tests
-cd backend
-pytest
+### Backend Tests
 
-# Frontend tests
-cd frontend
-npm test
+```bash
+# From the backend directory
+cd backend
+python -m pytest -v
+
+# Run specific test file
+python -m pytest tests/test_config.py -v
+
+# Run with coverage
+python -m pytest --cov=app --cov-report=term-missing
 ```
+
+**Note:** Tests work without a `.env` file as default values are provided. The `.env.example` file is used as a template for production configuration.
+
+### Frontend Tests
+
+*Frontend tests will be available when frontend is implemented*
 
 ## 📚 Project Structure
 
