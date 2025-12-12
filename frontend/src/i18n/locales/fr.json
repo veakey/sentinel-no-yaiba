@@ -1,0 +1,75 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "refresh": "Actualiser",
+    "logout": "Déconnexion"
+  },
+  "auth": {
+    "login": "Connexion",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "loginError": "Nom d'utilisateur ou mot de passe incorrect",
+    "welcome": "Bienvenue",
+    "loggedInAs": "Connecté en tant que"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "threats": "Menaces",
+    "totalThreats": "Total des menaces",
+    "activeThreats": "Menaces actives",
+    "resolvedThreats": "Menaces résolues",
+    "bySeverity": "Par sévérité",
+    "byStatus": "Par statut",
+    "byProvider": "Par fournisseur",
+    "lastUpdate": "Dernière mise à jour",
+    "noData": "Aucune donnée disponible"
+  },
+  "threats": {
+    "title": "Menaces",
+    "severity": "Sévérité",
+    "status": "Statut",
+    "provider": "Fournisseur",
+    "description": "Description",
+    "detectedAt": "Détecté le",
+    "resolvedAt": "Résolu le",
+    "high": "Élevée",
+    "medium": "Moyenne",
+    "low": "Faible",
+    "critical": "Critique",
+    "active": "Active",
+    "resolved": "Résolue",
+    "pending": "En attente"
+  },
+  "admin": {
+    "title": "Administration",
+    "providers": "Fournisseurs",
+    "users": "Utilisateurs",
+    "settings": "Paramètres",
+    "addProvider": "Ajouter un fournisseur",
+    "editProvider": "Modifier le fournisseur",
+    "deleteProvider": "Supprimer le fournisseur",
+    "providerName": "Nom du fournisseur",
+    "providerType": "Type de fournisseur",
+    "apiKey": "Clé API",
+    "baseUrl": "URL de base",
+    "isActive": "Actif",
+    "testConnection": "Tester la connexion"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "threats": "Menaces",
+    "admin": "Administration",
+    "profile": "Profil"
+  }
+}
+

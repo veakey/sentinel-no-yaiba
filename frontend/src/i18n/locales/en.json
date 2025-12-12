@@ -1,0 +1,75 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "refresh": "Refresh",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "username": "Username",
+    "password": "Password",
+    "loginError": "Incorrect username or password",
+    "welcome": "Welcome",
+    "loggedInAs": "Logged in as"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "threats": "Threats",
+    "totalThreats": "Total threats",
+    "activeThreats": "Active threats",
+    "resolvedThreats": "Resolved threats",
+    "bySeverity": "By severity",
+    "byStatus": "By status",
+    "byProvider": "By provider",
+    "lastUpdate": "Last update",
+    "noData": "No data available"
+  },
+  "threats": {
+    "title": "Threats",
+    "severity": "Severity",
+    "status": "Status",
+    "provider": "Provider",
+    "description": "Description",
+    "detectedAt": "Detected at",
+    "resolvedAt": "Resolved at",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "critical": "Critical",
+    "active": "Active",
+    "resolved": "Resolved",
+    "pending": "Pending"
+  },
+  "admin": {
+    "title": "Administration",
+    "providers": "Providers",
+    "users": "Users",
+    "settings": "Settings",
+    "addProvider": "Add provider",
+    "editProvider": "Edit provider",
+    "deleteProvider": "Delete provider",
+    "providerName": "Provider name",
+    "providerType": "Provider type",
+    "apiKey": "API Key",
+    "baseUrl": "Base URL",
+    "isActive": "Active",
+    "testConnection": "Test connection"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "threats": "Threats",
+    "admin": "Administration",
+    "profile": "Profile"
+  }
+}
+
