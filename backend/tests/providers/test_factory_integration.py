@@ -27,3 +27,23 @@ def test_factory_can_create_ninja_provider():
     assert isinstance(provider, NinjaProvider)
     assert provider.config == config
 
+
+def test_factory_has_malwarebytes_provider_registered():
+    """Test that Malwarebytes provider is registered in the factory"""
+    # Re-register in case previous tests cleared it
+    import app.providers  # noqa: F401
+    assert ProviderFactory.is_registered(ProviderType.MALWAREBYTES.value)
+
+
+def test_factory_can_create_malwarebytes_provider():
+    """Test that factory can create Malwarebytes provider instance"""
+    # Re-register in case previous tests cleared it
+    import app.providers  # noqa: F401
+    config = ProviderConfig(api_key="mb-test-key-12345678901234567890")
+    
+    provider = ProviderFactory.create(ProviderType.MALWAREBYTES.value, config)
+    
+    from app.providers.malwarebytes import MalwarebytesProvider
+    assert isinstance(provider, MalwarebytesProvider)
+    assert provider.config == config
+
