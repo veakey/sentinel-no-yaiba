@@ -14,14 +14,14 @@ export default function DetectionSummaryPage() {
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-6">
         <Shield className="w-8 h-8 text-primary-400" />
-        <h1 className="text-3xl font-bold text-white">Detection Summary</h1>
+        <h1 className="text-3xl font-bold text-white">{t('navigation.detectionSummary')}</h1>
       </div>
 
       {/* Summary Cards */}
       <div className="glass-strong rounded-xl p-6">
-        <h2 className="text-xl font-semibold text-white mb-2">Summary</h2>
+        <h2 className="text-xl font-semibold text-white mb-2">{t('detection.summary')}</h2>
         <p className="text-sm text-white/60 mb-4">
-          Threats detected in this reporting period and their status.
+          {t('detection.summaryDescription')}
         </p>
         <SummaryCards />
       </div>
@@ -29,17 +29,17 @@ export default function DetectionSummaryPage() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="glass-strong rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-white mb-2">Detections by threat category</h2>
+          <h2 className="text-xl font-semibold text-white mb-2">{t('detection.byThreatCategory')}</h2>
           <p className="text-sm text-white/60 mb-4">
-            The various threats your endpoints encountered. These threats may harm your endpoints and compromise your data.
+            {t('detection.byThreatCategoryDescription')}
           </p>
           <ThreatCategoryChart />
         </div>
 
         <div className="glass-strong rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-white mb-2">Detections per day</h2>
+          <h2 className="text-xl font-semibold text-white mb-2">{t('detection.perDay')}</h2>
           <p className="text-sm text-white/60 mb-4">
-            Detections from the most recent 30 days of the reporting period to help discover and monitor trends.
+            {t('detection.perDayDescription')}
           </p>
           <DetectionsPerDayChart />
         </div>
@@ -48,17 +48,17 @@ export default function DetectionSummaryPage() {
       {/* Tables Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="glass-strong rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-white mb-2">Endpoints with most detections</h2>
+          <h2 className="text-xl font-semibold text-white mb-2">{t('detection.endpointsWithMostDetections')}</h2>
           <p className="text-sm text-white/60 mb-4">
-            The 10 endpoints with the most detections. Monitor these endpoints closely to mitigate the risk to your network.
+            {t('detection.endpointsWithMostDetectionsDescription')}
           </p>
           <EndpointsTable />
         </div>
 
         <div className="glass-strong rounded-xl p-6">
-          <h2 className="text-xl font-semibold text-white mb-2">Detections by group</h2>
+          <h2 className="text-xl font-semibold text-white mb-2">{t('detection.byGroup')}</h2>
           <p className="text-sm text-white/60 mb-4">
-            The 10 groups with the most detections. Monitor these endpoints closely to mitigate the risk to your network.
+            {t('detection.byGroupDescription')}
           </p>
           <GroupsTable />
         </div>
@@ -66,9 +66,9 @@ export default function DetectionSummaryPage() {
 
       {/* Frequent Threats Table */}
       <div className="glass-strong rounded-xl p-6">
-        <h2 className="text-xl font-semibold text-white mb-2">Most frequently detected threats</h2>
+        <h2 className="text-xl font-semibold text-white mb-2">{t('detection.mostFrequentThreats')}</h2>
         <p className="text-sm text-white/60 mb-4">
-          The 10 most common threats detected, including those blocked, quarantined, deleted, found, and restored.
+          {t('detection.mostFrequentThreatsDescription')}
         </p>
         <FrequentThreatsTable />
       </div>
