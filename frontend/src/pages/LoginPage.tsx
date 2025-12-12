@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/store/authStore'
+import CircularProgress from '@/components/common/CircularProgress'
 import { Lock, User } from 'lucide-react'
 
 export default function LoginPage() {
@@ -76,9 +77,16 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            {isLoading ? t('common.loading') : t('auth.login')}
+            {isLoading ? (
+              <>
+                <CircularProgress size={20} />
+                <span>{t('common.loading')}</span>
+              </>
+            ) : (
+              t('auth.login')
+            )}
           </button>
         </form>
 

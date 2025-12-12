@@ -69,7 +69,9 @@
     "dashboard": "Tableau de bord",
     "threats": "Menaces",
     "admin": "Administration",
-    "profile": "Profil"
+    "profile": "Profil",
+    "tickets": "Tickets",
+    "reports": "Rapports"
   }
 }
 

@@ -4,6 +4,7 @@ import { useThreatsStore } from '@/store/threatsStore'
 import { useWebSocket } from '@/hooks/useWebSocket'
 import StatCard from '@/components/dashboard/StatCard'
 import ThreatChart from '@/components/dashboard/ThreatChart'
+import LoadingSpinner from '@/components/common/LoadingSpinner'
 import { Shield, AlertTriangle, CheckCircle, Clock } from 'lucide-react'
 
 export default function DashboardPage() {
@@ -41,7 +42,7 @@ export default function DashboardPage() {
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12 text-white/60">{t('common.loading')}</div>
+        <LoadingSpinner text={t('common.loading')} />
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

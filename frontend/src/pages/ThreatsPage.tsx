@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useThreatsStore } from '@/store/threatsStore'
 import ThreatCard from '@/components/threats/ThreatCard'
 import ThreatFilters from '@/components/threats/ThreatFilters'
+import LoadingSpinner from '@/components/common/LoadingSpinner'
 import type { Threat } from '@/types'
 
 export default function ThreatsPage() {
@@ -51,7 +52,7 @@ export default function ThreatsPage() {
       <ThreatFilters filters={filters} onFiltersChange={setFilters} />
 
       {isLoading ? (
-        <div className="text-center py-12 text-white/60">{t('common.loading')}</div>
+        <LoadingSpinner text={t('common.loading')} />
       ) : filteredThreats.length === 0 ? (
         <div className="text-center py-12 text-white/60">{t('dashboard.noData')}</div>
       ) : (

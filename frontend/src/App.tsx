@@ -4,6 +4,8 @@ import { useAuthStore } from './store/authStore'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 import ThreatsPage from './pages/ThreatsPage'
+import TicketsPage from './pages/TicketsPage'
+import ReportsPage from './pages/ReportsPage'
 import AdminPage from './pages/AdminPage'
 import Layout from './components/layout/Layout'
 import ProtectedRoute from './components/auth/ProtectedRoute'
@@ -30,6 +32,8 @@ function App() {
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="threats" element={<ThreatsPage />} />
+          <Route path="tickets" element={<TicketsPage />} />
+          <Route path="reports" element={<ReportsPage />} />
           <Route path="admin" element={<AdminPage />} />
         </Route>
       </Routes>

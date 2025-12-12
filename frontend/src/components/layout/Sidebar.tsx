@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { LayoutDashboard, Shield, Settings, LogOut } from 'lucide-react'
+import { LayoutDashboard, Shield, Settings, LogOut, Ticket, FileText } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 
 export default function Sidebar() {
@@ -10,6 +10,8 @@ export default function Sidebar() {
   const navItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: t('navigation.dashboard') },
     { path: '/threats', icon: Shield, label: t('navigation.threats') },
+    { path: '/tickets', icon: Ticket, label: 'Tickets' },
+    { path: '/reports', icon: FileText, label: 'Rapports' },
   ]
 
   if (user?.role === 'admin') {

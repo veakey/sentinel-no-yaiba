@@ -47,3 +47,46 @@ export interface LoginCredentials {
   password: string
 }
 
+export interface Ticket {
+  id: string
+  title: string
+  description: string
+  status: 'open' | 'in_progress' | 'resolved' | 'closed'
+  priority: 'low' | 'medium' | 'high' | 'critical'
+  assignedTo?: string
+  createdBy: string
+  createdAt: string
+  updatedAt: string
+  relatedThreats?: string[]
+  tags?: string[]
+}
+
+export interface Endpoint {
+  id: string
+  name: string
+  url: string
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+  description: string
+  requiresAuth: boolean
+  rateLimit?: number
+  lastChecked?: string
+  status: 'active' | 'inactive' | 'error'
+}
+
+export interface SecurityReport {
+  id: string
+  title: string
+  type: 'summary' | 'detailed' | 'incident'
+  generatedAt: string
+  period: {
+    start: string
+    end: string
+  }
+  summary: {
+    totalThreats: number
+    criticalThreats: number
+    resolvedThreats: number
+    activeThreats: number
+  }
+  details?: Record<string, any>
+}
