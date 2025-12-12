@@ -19,16 +19,23 @@ class ThreatService:
     - Asynchronous refresh
     """
     
-    def __init__(self, cache_manager: CacheManager, providers: Dict[str, BaseProvider]):
+    def __init__(
+        self, 
+        cache_manager: CacheManager, 
+        providers: Dict[str, BaseProvider],
+        websocket_manager=None
+    ):
         """
         Initialize ThreatService.
         
         Args:
             cache_manager: Cache manager instance
             providers: Dictionary mapping provider names to provider instances
+            websocket_manager: Optional WebSocket manager for real-time updates
         """
         self.cache_manager = cache_manager
         self.providers = providers
+        self.websocket_manager = websocket_manager
     
     async def get_threats(
         self, 
@@ -63,6 +70,10 @@ class ThreatService:
         
         # Store in cache
         self.cache_manager.set(cache_key, aggregated_data, ttl=300)
+        
+        # Broadcast update via WebSocket if manager is available
+        if self.websocket_manager:
+            await self._broadcast_update(aggregated_data)
         
         return aggregated_data
     
@@ -123,4 +134,18 @@ class ThreatService:
             raise ProviderException(f"Provider '{provider_name}' not found")
         
         return await provider.fetch_threats(params)
+    
+    async def _broadcast_update(self, data: Dict[str, Any]):
+        """
+        Broadcast threat data update via WebSocket.
+        
+        Args:
+            data: Threat data to broadcast
+        """
+        if self.websocket_manager:
+            message = {
+                "type": "threats_updated",
+                "data": data
+            }
+            await self.websocket_manager.broadcast(message)
 
