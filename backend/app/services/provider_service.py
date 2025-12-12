@@ -93,11 +93,13 @@ class ProviderService:
         Raises:
             ProviderException: If provider type is not registered or configuration is invalid
         """
-        # Decrypt API key
-        try:
-            api_key = EncryptionService.decrypt(db_provider.api_key_encrypted)
-        except Exception as e:
-            raise ProviderException(f"Failed to decrypt API key for provider {db_provider.name}: {str(e)}")
+        # Decrypt API key (if present)
+        api_key = None
+        if db_provider.api_key_encrypted:
+            try:
+                api_key = EncryptionService.decrypt(db_provider.api_key_encrypted)
+            except Exception as e:
+                raise ProviderException(f"Failed to decrypt API key for provider {db_provider.name}: {str(e)}")
         
         # Check if provider type is registered
         if not ProviderFactory.is_registered(db_provider.type):
@@ -105,15 +107,39 @@ class ProviderService:
         
         # Build ProviderConfig
         config_data = {
-            "api_key": api_key,
             "base_url": db_provider.base_url,
             "timeout": 30  # Default timeout
         }
         
-        # Merge provider-specific config if available
+        # Add API key if available
+        if api_key:
+            config_data["api_key"] = api_key
+        
+        # Merge provider-specific config if available (may contain client_id, client_secret)
         if db_provider.config:
             if isinstance(db_provider.config, dict):
-                config_data.update(db_provider.config)
+                # Extract OAuth credentials from config if present
+                if "client_id" in db_provider.config:
+                    config_data["client_id"] = db_provider.config["client_id"]
+                if "client_secret" in db_provider.config:
+                    # Decrypt client_secret if it's encrypted
+                    client_secret = db_provider.config["client_secret"]
+                    if isinstance(client_secret, str) and client_secret.startswith("encrypted:"):
+                        try:
+                            encrypted_value = client_secret.replace("encrypted:", "")
+                            config_data["client_secret"] = EncryptionService.decrypt(encrypted_value)
+                        except Exception as e:
+                            raise ProviderException(
+                                f"Failed to decrypt client_secret for provider {db_provider.name}: {str(e)}"
+                            )
+                    else:
+                        # Plain text client_secret (shouldn't happen in production, but handle it)
+                        config_data["client_secret"] = client_secret
+                
+                # Merge other config values
+                for key, value in db_provider.config.items():
+                    if key not in ["client_id", "client_secret"]:
+                        config_data[key] = value
         
         # Override timeout if specified in config
         if db_provider.config and isinstance(db_provider.config, dict):

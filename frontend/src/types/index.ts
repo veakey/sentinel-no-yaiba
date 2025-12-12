@@ -22,10 +22,15 @@ export interface Provider {
   guid: string
   name: string
   type: 'ninja' | 'malwarebytes'
-  base_url: string
+  base_url?: string
   is_active: boolean
   created_at: string
   updated_at: string
+  config?: {
+    client_id?: string
+    client_secret?: string
+    [key: string]: any
+  }
 }
 
 export interface ThreatsResponse {

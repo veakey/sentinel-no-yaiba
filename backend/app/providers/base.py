@@ -8,7 +8,9 @@ from pydantic import BaseModel, field_validator
 
 class ProviderConfig(BaseModel):
     """Configuration for a provider"""
-    api_key: str
+    api_key: Optional[str] = None
+    client_id: Optional[str] = None
+    client_secret: Optional[str] = None
     base_url: Optional[str] = None
     timeout: int = 30
     
@@ -16,8 +18,16 @@ class ProviderConfig(BaseModel):
     @classmethod
     def validate_api_key(cls, v):
         """Validate API key format"""
-        if not v or len(v) < 10:
+        if v is not None and len(v) < 10:
             raise ValueError("API key invalide")
+        return v
+    
+    @field_validator('client_id', 'client_secret')
+    @classmethod
+    def validate_oauth_credentials(cls, v):
+        """Validate OAuth credentials format"""
+        if v is not None and len(v) < 5:
+            raise ValueError("OAuth credential invalide")
         return v
 
 

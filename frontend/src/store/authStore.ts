@@ -54,19 +54,22 @@ export const useAuthStore = create<AuthState>()(
       },
 
       checkAuth: async () => {
+        set({ isLoading: true })
         const token = localStorage.getItem('access_token')
         if (!token) {
-          set({ user: null, isAuthenticated: false })
+          set({ user: null, isAuthenticated: false, isLoading: false })
           return
         }
 
         try {
           const user = await authApi.getCurrentUser()
-          set({ user, isAuthenticated: true })
-        } catch {
-          // Mock check for development
-          const mockUser = mockUsers[0]
-          set({ user: mockUser, isAuthenticated: true })
+          set({ user, isAuthenticated: true, isLoading: false })
+        } catch (error) {
+          // If token is invalid, clear it and logout
+          console.error('Auth check failed:', error)
+          localStorage.removeItem('access_token')
+          localStorage.removeItem('refresh_token')
+          set({ user: null, isAuthenticated: false, isLoading: false })
         }
       },
     }),

@@ -81,5 +81,71 @@ export const threatsApi = {
   },
 }
 
+export interface Provider {
+  guid: string
+  name: string
+  type: 'ninja' | 'malwarebytes'
+  base_url?: string
+  is_active: boolean
+  created_at: string
+  updated_at: string
+  config?: {
+    client_id?: string
+    client_secret?: string
+    [key: string]: any
+  }
+}
+
+export interface ProviderCreateRequest {
+  name: string
+  type: 'ninja' | 'malwarebytes'
+  api_key?: string
+  base_url?: string
+  config?: {
+    client_id?: string
+    client_secret?: string
+    [key: string]: any
+  }
+  is_active?: boolean
+}
+
+export interface ProviderUpdateRequest {
+  name?: string
+  api_key?: string
+  base_url?: string
+  config?: {
+    client_id?: string
+    client_secret?: string
+    [key: string]: any
+  }
+  is_active?: boolean
+}
+
+export const providersApi = {
+  getProviders: async (): Promise<Provider[]> => {
+    const response = await apiClient.get('/api/admin/providers')
+    return response.data
+  },
+
+  getProvider: async (guid: string): Promise<Provider> => {
+    const response = await apiClient.get(`/api/admin/providers/${guid}`)
+    return response.data
+  },
+
+  createProvider: async (data: ProviderCreateRequest): Promise<Provider> => {
+    const response = await apiClient.post('/api/admin/providers', data)
+    return response.data
+  },
+
+  updateProvider: async (guid: string, data: ProviderUpdateRequest): Promise<Provider> => {
+    const response = await apiClient.put(`/api/admin/providers/${guid}`, data)
+    return response.data
+  },
+
+  deleteProvider: async (guid: string): Promise<void> => {
+    await apiClient.delete(`/api/admin/providers/${guid}`)
+  },
+}
+
 export default apiClient
 
