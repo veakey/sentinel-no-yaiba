@@ -14,7 +14,7 @@ os.environ.setdefault("SECRET_KEY", "test-secret-key-for-pytest")
 import app.providers  # noqa: F401
 
 # Import all models to ensure they're registered with Base
-from app.database.models import User, CacheEntry  # noqa: F401
+from app.database.models import User, CacheEntry, Provider, Dashboard  # noqa: F401
 
 from app.database.base import Base
 from app.database.database import get_db

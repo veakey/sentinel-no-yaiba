@@ -1,11 +1,13 @@
 """
 FastAPI dependencies for route handlers
 """
+from fastapi import Depends
+from sqlalchemy.orm import Session
+
 from app.services.threat_service import ThreatService
+from app.services.provider_service import ProviderService
 from app.cache.cache_manager import CacheManager
-from app.providers.factory import ProviderFactory
-from app.providers.base import ProviderConfig
-from app.providers.factory import ProviderType
+from app.database.database import get_db
 
 
 def get_cache_manager() -> CacheManager:
@@ -20,19 +22,36 @@ def get_cache_manager() -> CacheManager:
     return CacheManager(default_ttl=300, enable_db=False)
 
 
-def get_threat_service() -> ThreatService:
+def get_provider_service(db: Session = Depends(get_db)) -> ProviderService:
     """
-    Get or create ThreatService instance with configured providers.
+    Get ProviderService instance.
     
+    Args:
+        db: Database session
+        
     Returns:
-        ThreatService instance with all registered providers
+        ProviderService instance
     """
-    cache_manager = get_cache_manager()
+    return ProviderService(db)
+
+
+def get_threat_service(
+    db: Session = Depends(get_db),
+    cache_manager: CacheManager = Depends(get_cache_manager)
+) -> ThreatService:
+    """
+    Get or create ThreatService instance with providers loaded from database.
     
-    # Build providers dictionary from factory
-    providers = {}
-    # TODO: Load providers from database in Phase 5
-    # For now, providers are hardcoded (will be configurable later)
+    Args:
+        db: Database session
+        cache_manager: Cache manager instance
+        
+    Returns:
+        ThreatService instance with all active providers from database
+    """
+    # Load providers from database
+    provider_service = ProviderService(db)
+    providers = provider_service.load_all_providers(active_only=True)
     
     return ThreatService(cache_manager=cache_manager, providers=providers)
 

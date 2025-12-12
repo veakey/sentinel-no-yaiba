@@ -23,11 +23,22 @@ def mock_threat_service():
     return service
 
 
-def test_get_threats_endpoint_exists(client):
+def test_get_threats_endpoint_exists(client, db_session):
     """Test that GET /api/threats endpoint exists"""
-    response = client.get("/api/threats")
-    # Should not be 404
-    assert response.status_code != 404
+    # Use mock to avoid DB dependency
+    from unittest.mock import MagicMock, AsyncMock
+    from app.services.threat_service import ThreatService
+    
+    mock_service = MagicMock(spec=ThreatService)
+    mock_service.get_threats = AsyncMock(return_value={})
+    app.dependency_overrides[get_threat_service] = lambda: mock_service
+    
+    try:
+        response = client.get("/api/threats")
+        # Should not be 404
+        assert response.status_code != 404
+    finally:
+        app.dependency_overrides.clear()
 
 
 def test_get_threats_returns_aggregated_data(client, mock_threat_service):
@@ -105,9 +116,20 @@ def test_get_threats_handles_service_errors(client, mock_threat_service):
         app.dependency_overrides.clear()
 
 
-def test_get_threats_returns_json(client):
+def test_get_threats_returns_json(client, db_session):
     """Test that response is valid JSON"""
-    response = client.get("/api/threats")
-    # Even if error, should be JSON
-    assert response.headers.get("content-type") == "application/json"
+    # Use mock to avoid DB dependency
+    from unittest.mock import MagicMock, AsyncMock
+    from app.services.threat_service import ThreatService
+    
+    mock_service = MagicMock(spec=ThreatService)
+    mock_service.get_threats = AsyncMock(return_value={})
+    app.dependency_overrides[get_threat_service] = lambda: mock_service
+    
+    try:
+        response = client.get("/api/threats")
+        # Even if error, should be JSON
+        assert response.headers.get("content-type") == "application/json"
+    finally:
+        app.dependency_overrides.clear()
 
